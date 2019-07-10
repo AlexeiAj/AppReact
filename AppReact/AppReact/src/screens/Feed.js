@@ -5,9 +5,9 @@ import {
     Alert,
 } from 'react-native';
 
-import Post from './src/components/Post';
+import Post from '../components/Post';
 
-export default class App extends Component {
+export default class Feed extends Component {
 
     constructor(){
         super();

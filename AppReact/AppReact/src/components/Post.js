@@ -29,8 +29,8 @@ export default class Post extends Component {
                 <Text style={styles.titulo}>{post.post_titulo}</Text>
                 <Image source={{uri: url+conteudo.imagem}} style={styles.foto}/>
                 <View style={styles.info}>
-                        <Text styles={styles.data}>{post.post_data}</Text>
-                        <Text styles={styles.data}>{post.post_categoria}</Text>
+                    <Text style={styles.postdata}>{post.post_data}</Text>
+                    <Text>{post.post_categoria}</Text>
                 </View>
                 <Text style={styles.texto}>{conteudo.texto}</Text>
             </View>
@@ -49,12 +49,10 @@ const styles = StyleSheet.create({
     },
     info: {
         flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        width: '30%',
-        fontSize: 10,
     },
-    data: {
-        margin: 20,
+    postdata: {
+        marginRight: 5,
+        marginLeft: 5,
     },
     texto: {
         margin: 5,
