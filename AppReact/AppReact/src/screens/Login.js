@@ -5,6 +5,8 @@ import {
     Dimensions,
     TextInput,
     Button,
+    AsyncStorage,
+    Text,
 } from 'react-native';
 
 const width = Dimensions.get('screen').width;
@@ -13,15 +15,21 @@ export default class Login extends Component {
 
     constructor() {
         super();
+
+        this.state = {
+            usuario: '',
+            senha: '',
+            mensagem: ''
+        }
     }
 
     logar() {
-        const uri = "http://alexeiaj.duckdns.org:8800/logar";
+        const uri = "http://alexeiaj.duckdns.org:8800/auth";
         
         const requestInfo = {
             method: 'POST',
             body: JSON.stringify({
-                usuario: this.state.usuario,
+                login: this.state.usuario,
                 senha: this.state.senha,
             }),
             headers: new Headers({
@@ -34,8 +42,15 @@ export default class Login extends Component {
                 if(response.ok) return response.text();
                 throw new Error("Não foi possível efetuar login.");
             })
-            .then(token => console.warn(token))
-            .catch(error => console.warn(error));
+            .then(json => {
+                let tokenObj = JSON.parse(json);
+                return `${tokenObj.tipo} ${tokenObj.token}`;
+            })
+            .then(token => {
+                AsyncStorage.setItem('token', token);
+                AsyncStorage.setItem('usuario', this.state.usuario);
+            })
+            .catch(e => this.setState({mensagem: e.message}));
     }
 
     render() {
@@ -46,6 +61,10 @@ export default class Login extends Component {
                     <TextInput style={styles.input} placeholder="Senha.." autoCapitalize="none" secureTextEntry={true} onChangeText={texto => this.setState({senha: texto})}/>
                     <Button title="Login" onPress={this.logar.bind(this)}/>
                 </View>
+
+                <Text style={styles.mensagem}>
+                    {this.state.mensagem}
+                </Text>
             </View>
         );
     }
@@ -64,5 +83,10 @@ const styles = StyleSheet.create({
         height: 40,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
+    },
+    mensagem: {
+        color: 'red',
+        marginTop: 15,
+        fontSize: 10,
     },
 });
